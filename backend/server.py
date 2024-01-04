@@ -1,29 +1,18 @@
-# Import flask and datetime module for showing date and time
-import datetime
-
-import psycopg2
-from flask import Flask, jsonify, request
+# Import flask and config
 import config
-
-x = datetime.datetime.now()
+import psycopg2
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS, cross_origin
 
 # Initializing flask app
-app = Flask(__name__)
-
-
-
-
-
-# Route for seeing a data
-@app.route("/data")
-def get_time():
-    # Returning an api for showing in  reactjs
-    return {"Name": "geek", "Age": "22", "Date": x, "programming": "python"}
+app = Flask(__name__, static_folder="../jojo-frontend/build", static_url_path="/")
+cors = CORS(app)
 
 @app.route("/characters")
+@cross_origin()
 def get_characters():
     try:
-        search_query = request.args.get('search', '')  # Retrieve search query parameter
+        search_query = request.args.get("search", "")  # Retrieve search query parameter
 
         # Establish a connection to the ElephantSQL database
         database_url = f"postgres://{config.USERNAME}:{config.PASSWORD}@{config.SERVER_HOST}/{config.DEFAULT_DB}"
@@ -52,7 +41,7 @@ def get_characters():
                             OR Characters.stand_3 = Stands.stand_name)
                             AND Characters.character_name ILIKE %s
                         GROUP BY Characters.character_name;"""
-            cursor.execute(query, ('%' + search_query + '%',))
+            cursor.execute(query, ("%" + search_query + "%",))
         else:
             # Query to fetch all characters if no search query provided
             query = """SELECT Characters.character_name,
@@ -84,57 +73,11 @@ def get_characters():
         return result
     except Exception as e:
         # Handle database connection or query issues
-        return jsonify({'error': str(e)})
+        return jsonify({"error": str(e)})
 
-
-# # Route for getting all characters
-# @app.route("/characters")
-# def get_characters():
-#     try:
-#         # Establish a connection to the ElephantSQL database
-#         database_url = f"postgres://{config.USERNAME}:{config.PASSWORD}@{config.SERVER_HOST}/{config.DEFAULT_DB}"
-#         conn = psycopg2.connect(database_url)
-
-#         # Create a cursor to execute SQL queries
-#         cursor = conn.cursor()
-
-#         # Query to fetch user profile by user_id
-#         query = """SELECT Characters.character_name,
-#                     jsonb_agg(Stands.stand_name) AS stand_names,
-#                     jsonb_agg(
-#                         jsonb_build_object(
-#                             'stand_power', Stands.stand_power,
-#                             'stand_speed', Stands.stand_speed,
-#                             'stand_range', Stands.stand_range,
-#                             'stand_durability', Stands.stand_durability,
-#                             'stand_precision', Stands.stand_precision,
-#                             'stand_development_potential', Stands.stand_development_potential
-#                         )
-#                     ) AS stand_attributes
-#                 FROM Characters
-#                 CROSS JOIN Stands
-#                 WHERE
-#                     Characters.stand_1 = Stands.stand_name
-#                     OR Characters.stand_2 = Stands.stand_name
-#                     OR Characters.stand_3 = Stands.stand_name
-#                 GROUP BY Characters.character_name;"""
-        
-#         cursor.execute(query)
-
-#         # Fetch the data from the database
-#         data = cursor.fetchall()
-
-#         # Close the cursor and connection
-#         cursor.close()
-#         conn.close()
-
-#         # Convert the data to a JSON response
-#         result = jsonify(data)
-
-#         return result
-#     except Exception as e:
-#         # Handle database connection or query errors
-#         return jsonify({'error': str(e)})
+@app.route("/")
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
 
 # Running app
 if __name__ == "__main__":

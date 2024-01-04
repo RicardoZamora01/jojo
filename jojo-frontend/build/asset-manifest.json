@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e3854ccc.css",
+    "main.js": "/static/js/main.fbedd61e.js",
+    "static/js/787.0fc64237.chunk.js": "/static/js/787.0fc64237.chunk.js",
+    "static/media/tbd.png": "/static/media/tbd.9b10736b4b885917c3e2.png",
+    "static/media/wallpaper.jpeg": "/static/media/wallpaper.1f371b232f2ec783bc51.jpeg",
+    "static/media/jjba_logo.png": "/static/media/jjba_logo.9629e0340c9ad637d8d1.png",
+    "index.html": "/index.html",
+    "main.e3854ccc.css.map": "/static/css/main.e3854ccc.css.map",
+    "main.fbedd61e.js.map": "/static/js/main.fbedd61e.js.map",
+    "787.0fc64237.chunk.js.map": "/static/js/787.0fc64237.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e3854ccc.css",
+    "static/js/main.fbedd61e.js"
+  ]
+}
