@@ -1,13 +1,20 @@
-# Import flask and config
-import config
+# Import flask and psycopg2 libraries
 import psycopg2
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS, cross_origin
+import os
 
 # Initializing flask app
 app = Flask(__name__, static_folder="../jojo-frontend/build", static_url_path="")
 cors = CORS(app)
 
+# Establishing database connection through ElephantSQL by using environment variables
+USERNAME = os.environ.get("USERNAME")
+PASSWORD = os.environ.get("PASSWORD")
+SERVER_HOST = os.environ.get("SERVER_HOST")
+DEFAULT_DB = os.environ.get("DEFAULT_DB")
+
+# Routes for the API
 @app.route("/characters")
 @cross_origin()
 def get_characters():
@@ -15,7 +22,7 @@ def get_characters():
         search_query = request.args.get("search", "")  # Retrieve search query parameter
 
         # Establish a connection to the ElephantSQL database
-        database_url = f"postgres://{config.USERNAME}:{config.PASSWORD}@{config.SERVER_HOST}/{config.DEFAULT_DB}"
+        database_url = f"postgres://{USERNAME}:{PASSWORD}@{SERVER_HOST}/{DEFAULT_DB}"
         conn = psycopg2.connect(database_url)
         cursor = conn.cursor()
 
@@ -75,6 +82,7 @@ def get_characters():
         # Handle database connection or query issues
         return jsonify({"error": str(e)})
 
+# Route for serving the frontend
 @app.route("/")
 def serve():
     return send_from_directory(app.static_folder, 'index.html')
