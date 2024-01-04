@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS, cross_origin
 
 # Initializing flask app
-app = Flask(__name__, static_folder="../jojo-frontend/build", static_url_path="/")
+app = Flask(__name__, static_folder="../jojo-frontend/build", static_url_path="")
 cors = CORS(app)
 
 @app.route("/characters")
