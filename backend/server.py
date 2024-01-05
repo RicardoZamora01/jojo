@@ -84,6 +84,7 @@ def get_characters():
 
 # Route for serving the frontend
 @app.route("/")
+@cross_origin()
 def serve():
     return send_from_directory(app.static_folder, 'index.html')
 
